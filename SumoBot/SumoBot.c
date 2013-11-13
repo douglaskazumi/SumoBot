@@ -44,20 +44,21 @@ int main(void)
 	
 	while(1)
 	{
-		getSonar();
+		updateRanges();
 		
-		//printf("The range is %u inches\r\n", (uint16_t)range); // Print the range in inches to serial as
-
-		if(range > 10){
-			turn(LEFT);
-		} 
-		else if (range > 2)
-		{
-			move(FWD);
-		} 
-		else
-		{
-			move(STOP);
-		}
+		//printf("The range is %u inches, %u          %u\r\n", (uint16_t)rangeCenter, (uint16_t)rangeLeft, (uint16_t)rangeRight); // Print the range in inches to serial as
+		//if(rangeCenter < 12 && rangeRight < 12){
+			//if(rangeCenter < 8){
+				//move(FWD);
+			//}
+			//else if (rangeRight < 8)
+			//{
+				//turn(LEFT);
+			//}
+			//else
+			//{
+				//turn(RIGHT);
+			//}
+		//}
 	}
 }

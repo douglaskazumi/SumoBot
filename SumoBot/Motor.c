@@ -23,16 +23,16 @@ void moveMotor( unsigned int offset, int motor )
 		//Timer 0 controls right side motor through pins 5 and 6
 		
 		//Logic from lecture
-		if(setPoint > DEADTIME){
-			OCR0A = setPoint - DEADTIME;
+		if(offset > DEADTIME){
+			OCR0A = offset - DEADTIME;
 		}
 		else {
 			OCR0A = 1;
 		}
 
-		if (setPoint < (0xFF - DEADTIME))
+		if (offset < (0xFF - DEADTIME))
 		{
-			OCR0B = setPoint + DEADTIME;
+			OCR0B = offset + DEADTIME;
 		}
 		else
 		{
@@ -43,16 +43,16 @@ void moveMotor( unsigned int offset, int motor )
 		//Timer 2 controls left side motor through pins 3 and 11
 		
 		//Logic from lecture
-		if(setPoint > DEADTIME){
-			OCR2A = setPoint - DEADTIME;
+		if(offset > DEADTIME){
+			OCR2A = offset - DEADTIME;
 		}
 		else {
 			OCR2A = 1;
 		}
 
-		if (setPoint < (0xFF - DEADTIME))
+		if (offset < (0xFF - DEADTIME))
 		{
-			OCR2B = setPoint + DEADTIME;
+			OCR2B = offset + DEADTIME;
 		}
 		else
 		{
@@ -123,12 +123,12 @@ void setPWM(void){
 /************************************************************************/
 void turn(int direction){
 	if(direction == RIGHT){
-		moveMotor(BWD - 50,RIGHT);
-		moveMotor(FWD + 50,LEFT);
+		moveMotor(BWD,RIGHT);
+		moveMotor(FWD,LEFT);
 	}
 	else if (direction == LEFT){
-		moveMotor(FWD + 50,RIGHT);
-		moveMotor(BWD - 50,LEFT);
+		moveMotor(FWD,RIGHT);
+		moveMotor(BWD,LEFT);
 	}
 }
 

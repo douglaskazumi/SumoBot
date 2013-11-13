@@ -10,7 +10,9 @@
 
 volatile unsigned int count;
 volatile unsigned int risingEdge;
-volatile float range;
+volatile float rangeCenter;
+volatile float rangeLeft;
+volatile float rangeRight;
 
 void initSonar(void);
 
@@ -18,8 +20,8 @@ void resetTimer(void);
 
 void updateCount(void);
 
-void startSonarMeasurement(void);
+void startSonarMeasurement(int sonar);
 
-void getSonar(void);
+void updateRanges(void);
 
 #endif /* SONAR_H_ */
