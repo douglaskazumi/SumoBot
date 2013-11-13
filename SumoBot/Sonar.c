@@ -18,8 +18,8 @@ void initSonar(void) // enable interrupt
 	risingEdge = 1;
 	range = 10000;
 	
-	PCICR |= (1<<PCIE1); //enable pin change interrupt
-	PCMSK1 |= (1<<PCINT8); //enable bit 3 interrupt
+	PCICR |= (1<<PCIE1); //enable pin change interrupt for PORTC
+	PCMSK1 |= (1<<PCINT8); //enable interrupt for PC0 (Pin A0)
 	
 	TCCR1B |= ((1<<1)|(1<<0)); // set bit 1 and 0 to 1 to set prescaler to 64
 }
