@@ -99,6 +99,12 @@
     <Compile Include="Motor.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="QTI.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="QTI.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="serial.h">
       <SubType>compile</SubType>
     </Compile>

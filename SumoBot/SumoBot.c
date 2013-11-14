@@ -18,22 +18,11 @@
 #include "serial.h"
 #include "Sonar.h"
 #include "Motor.h"
-
-
-/*
-PORTB
-0 - nothing
-1<<1 - front left
-1<<2 - front right
-1<<3 - back right
-1<<4 - back left
-1<<5 - center
-*/
-volatile int qti = 0;
+#include "QTI.h"
 
 int main(void)
 {
-	init_uart();
+	//init_uart();
 
 	//set up pwm
 	setPWM();
@@ -42,9 +31,12 @@ int main(void)
 	initSonar();
 	sei(); // enable global interrupts
 	
+	move(FWD);
+	
 	while(1)
-	{
-		updateRanges();
+	{			
+		checkQTI();
+		//updateRanges();
 		
 		//printf("The range is %u inches, %u          %u\r\n", (uint16_t)rangeCenter, (uint16_t)rangeLeft, (uint16_t)rangeRight); // Print the range in inches to serial as
 		//if(rangeCenter < 12 && rangeRight < 12){
@@ -60,5 +52,14 @@ int main(void)
 				//turn(RIGHT);
 			//}
 		//}
+	}
+}
+
+ISR(PCINT1_vect){
+	if(risingEdge){
+		resetTimer();
+	}
+	else{
+		updateCount();
 	}
 }

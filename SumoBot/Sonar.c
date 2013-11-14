@@ -69,12 +69,3 @@ void updateRanges(void){
 	rangeRight = count * 0.02712; // Calculate range in inches from timer count
 }
 
-ISR(PCINT1_vect){
-	if(risingEdge){
-		resetTimer();
-	}
-	else{
-		updateCount();
-	}
-}
-
