@@ -8,6 +8,12 @@
 #ifndef QTI_H_
 #define QTI_H_
 
+volatile int qti;
+volatile int first;
+volatile int dead;
+
 void checkQTI(void);
+
+void handleQTI(void);
 
 #endif /* QTI_H_ */

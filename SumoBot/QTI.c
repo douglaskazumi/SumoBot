@@ -17,26 +17,89 @@
 #include "QTI.h"
 
 void checkQTI(void){
-		if(!(PIND & (1<<PIND2)) && !(PIND & (1<<PIND1))){ //Both front
-			move(BWD);
-			_delay_ms(50);
-			turn(LEFT);
-			_delay_ms(1000);
-			move(FWD);
-		}
-		else if(!(PIND & (1<<PIND2))){ //Front right
-			move(BWD);
-			_delay_ms(50);
-			turn(LEFT);
-			_delay_ms(120);
-			move(FWD);
-		}
-		else if (!(PIND & (1<<PIND1))) //Front left
-		{
-			move(BWD);
-			_delay_ms(50);
-			turn(RIGHT);
-			_delay_ms(120);
-			move(FWD);
-		}
+		qti = PIND & ((1<<PIND1) | (1<<PIND2));
+}
+
+void handleQTI(void){
+	if (!(PIND & (1<<PIND7)))
+	{
+		move(STOP);
+		dead = 1;
+	}
+	//else
+	int back = 300;
+	int turnT = 120;
+	
+	/************************************************************************/
+	/* Code for remaining inside black                                      */
+	/************************************************************************/
+	//if(!(PIND & ((1<<PIND7) | (1<<PIND2)))){ //Both front
+		//move(BWD);
+		//_delay_ms(back);
+		//turn(LEFT);
+		//_delay_ms(turnT);
+		///************************************************************************/
+		///* Disable if using with sonar                                          */
+		///************************************************************************/
+		////move(FWD);
+	//}
+	//else if(!(PIND & (1<<PIND2))){ //Front right
+		//move(BWD);
+		//_delay_ms(back);
+		//turn(LEFT);
+		//_delay_ms(turnT);
+		///************************************************************************/
+		///* Disable if using with sonar                                          */
+		///************************************************************************/
+		//move(FWD);
+	//}
+	//else if (!(PIND & (1<<PIND7))) //Front left
+	//{
+		//move(BWD);
+		//_delay_ms(back);
+		//turn(RIGHT);
+		//_delay_ms(turnT);
+		///************************************************************************/
+		///* Disable if using with sonar                                          */
+		///************************************************************************/
+		//move(FWD);
+	//}
+	
+	/************************************************************************/
+	/* Code for the straight line milestone                                 */
+	/************************************************************************/
+	//if((!(qti & (1<<PIND2))||!(qti & (1<<PIND1)))){ //Front right
+		//if(first){
+			//move(BWD);
+			//_delay_ms(1000);
+			//turn(LEFT);
+			//_delay_ms(1300);
+			//move(FWD);
+			//first = 0;
+		//}
+		//else{
+			//if(!(qti & ((1<<PIND1) | (1<<PIND2)))){ //Both front
+				//move(BWD);
+				//_delay_ms(back);
+				//turn(LEFT);
+				//_delay_ms(turnT);
+				//move(FWD);
+			//}
+			//else if(!(qti & (1<<PIND2))){ //Front right
+				//move(BWD);
+				//_delay_ms(back);
+				//turn(LEFT);
+				//_delay_ms(turnT);
+				//move(FWD);
+			//}
+			//else if (!(qti & (1<<PIND1))) //Front left
+			//{
+				//move(BWD);
+				//_delay_ms(back);
+				//turn(RIGHT);
+				//_delay_ms(turnT);
+				//move(FWD);
+			//}
+		//}
+	//}
 }

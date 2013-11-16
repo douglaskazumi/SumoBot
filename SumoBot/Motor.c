@@ -70,8 +70,8 @@ void setPWM(void){
 	PB3 - OC2A (pin 11)
 	PD3 - OC2B (pin 3)
 	*/
-	DDRB = (1<<3);
-	DDRD = (1<<3)|(1<<5)|(1<<6);
+	DDRB |= (1<<PINB3);
+	DDRD |= (1<<PIND3)|(1<<PIND5)|(1<<PIND6);
 	
 	//Clear the timer control registers
 	TCCR0A = 0;
@@ -137,6 +137,7 @@ void turn(int direction){
 /************************************************************************/
 void move(int direction){
 	if(direction == FWD){
+		//moveMotor(FWD+11,RIGHT); //Hack to try to drive straight
 		moveMotor(FWD,RIGHT);
 		moveMotor(FWD,LEFT);
 	}

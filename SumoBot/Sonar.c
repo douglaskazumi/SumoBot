@@ -64,8 +64,8 @@ void updateRanges(void){
 	//startSonarMeasurement(LEFT); // start trigger pulse for new sonar measurement
 	//_delay_ms(20); // Minimum delay theoretically 18.5ms due to sonar
 	//rangeLeft = count * 0.02712; // Calculate range in inches from timer count
-	startSonarMeasurement(RIGHT); // start trigger pulse for new sonar measurement
-	_delay_ms(20); // Minimum delay theoretically 18.5ms due to sonar
-	rangeRight = count * 0.02712; // Calculate range in inches from timer count
+	//startSonarMeasurement(RIGHT); // start trigger pulse for new sonar measurement
+	//_delay_ms(20); // Minimum delay theoretically 18.5ms due to sonar
+	//rangeRight = count * 0.02712; // Calculate range in inches from timer count
 }
 
