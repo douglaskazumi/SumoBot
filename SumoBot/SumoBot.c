@@ -6,9 +6,9 @@
 */
 
 #define F_CPU 16000000UL
-#define FWD 0
+#define FWD 255
 #define STOP 127
-#define BWD 255
+#define BWD 0
 #define LEFT 1
 #define RIGHT 0
 
@@ -22,38 +22,50 @@
 
 int main(void)
 {
-	//init_uart();
+	/************************************************************************/
+	/* LED   Pin 7                                                          */
+	/************************************************************************/
+	//DDRD |= (1<<PIND7);
+	//PORTD &= ~(1<<PIND7);
+	
+	/************************************************************************/
+	/* To turn on remotely pin 2                                            */
+	/************************************************************************/
+	//while(PIND & (1<<PIND2)){
+	//}
+	
+	init_uart();
 	qti = 0;
 	first = 1;
 	dead = 0;
-	DDRB |= (1<<PINB5);
-	PORTB &= ~(1<<PINB5);
+	
+
 
 	//set up pwm
 	setPWM();
 	//set up QTI
+	initQTI();
 	//set up sonar
-	initSonar();
+	//initSonar();
 	sei(); // enable global interrupts
 
 	/************************************************************************/
 	/* QTI test - part 1                                                    */
 	/************************************************************************/
-	move(FWD);
-	
+	//move(FWD);
+	turn(LEFT);
 	
 	while(1)
-	{			
-		//checkQTI();
-		///************************************************************************/
-		///* 2 - Front left / 4 - Front right / 6 - Both                          */
-		///************************************************************************/
-		//printf("The qti is %i\r\n", qti); // Print the range in inches to serial as
-		//if(!(PIND & (1<<PIND2)) || !(PIND & (1<<PIND7))){
-			///************************************************************************/
-			///* QTI test - part 2                                                    */
-			///************************************************************************/
-			handleQTI();
+	{		
+		/************************************************************************/
+		/* QTI with interruptions test                                          */
+		/************************************************************************/
+		
+		//if(qti > 0){
+			/////************************************************************************/
+			/////* QTI test - part 2                                                    */
+			/////************************************************************************/
+			//handleQTI();
 		//}
 		//else{
 		//
@@ -71,10 +83,10 @@ int main(void)
 			//}
 		//}
 		
-		if(dead){
-			PORTB |= (1<<PINB5);
-			return;
-		}
+		//if(dead){
+			//PORTB |= (1<<PINB5);
+			//return;
+		//}
 		
 		//printf("The range is %u inches, %u          %u\r\n", (uint16_t)rangeCenter, (uint16_t)rangeLeft, (uint16_t)rangeRight); // Print the range in inches to serial as
 		//if(rangeCenter < 12 && rangeRight < 12){
@@ -101,6 +113,13 @@ int main(void)
 		//move(STOP);
 		//}
 	}
+}
+
+ISR(PCINT0_vect){
+	//qti = PINB & ((1<<PINB0)|(1<<PINB1)|(1<<PINB2)|(1<<PINB4)|(1<<PINB5));
+	//qti = qti ^ ((1<<PINB0)|(1<<PINB1)|(1<<PINB2)|(1<<PINB4)|(1<<PINB5));
+	qti = PINB & ((1<<PINB4)|(1<<PINB5));
+	qti = qti ^ ((1<<PINB4)|(1<<PINB5));
 }
 
 ISR(PCINT1_vect){

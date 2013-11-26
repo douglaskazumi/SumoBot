@@ -6,9 +6,9 @@
 */
 #define F_CPU 16000000UL
 #define DEADTIME 1
-#define FWD 0
+#define FWD 255
 #define STOP 127
-#define BWD 255
+#define BWD 0
 #define LEFT 1
 #define RIGHT 0
 

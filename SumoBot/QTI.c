@@ -5,9 +5,9 @@
  *  Author: kazumi
  */ 
 #define F_CPU 16000000UL
-#define FWD 0
+#define FWD 255
 #define STOP 127
-#define BWD 255
+#define BWD 0
 #define LEFT 1
 #define RIGHT 0
 
@@ -16,54 +16,85 @@
 #include <util/delay.h>
 #include "QTI.h"
 
-void checkQTI(void){
-		qti = PIND & ((1<<PIND1) | (1<<PIND2));
+void initQTI(void){
+	PCICR |= 0x01;
+	//P5 - Front Right - pin 13
+	//P4 - front left - pin 12
+	//P2 - back left - pin10
+	//P1 - back right - pin 9
+	//P0 - Center qti - pin 8
+	PCMSK0 |= (1<<PCINT0)|(1<<PCINT1)|(1<<PCINT2)|(1<<PCINT4)|(1<<PCINT5);
 }
 
 void handleQTI(void){
-	if (!(PIND & (1<<PIND7)))
+	//Check for center QTI
+	if (qti & (1<<0))
 	{
 		move(STOP);
 		dead = 1;
 	}
-	//else
-	int back = 300;
-	int turnT = 120;
+	else{
+		int back = 300;
+		int turnT = 300;
 	
-	/************************************************************************/
-	/* Code for remaining inside black                                      */
-	/************************************************************************/
-	//if(!(PIND & ((1<<PIND7) | (1<<PIND2)))){ //Both front
-		//move(BWD);
-		//_delay_ms(back);
-		//turn(LEFT);
-		//_delay_ms(turnT);
-		///************************************************************************/
-		///* Disable if using with sonar                                          */
-		///************************************************************************/
-		////move(FWD);
-	//}
-	//else if(!(PIND & (1<<PIND2))){ //Front right
-		//move(BWD);
-		//_delay_ms(back);
-		//turn(LEFT);
-		//_delay_ms(turnT);
-		///************************************************************************/
-		///* Disable if using with sonar                                          */
-		///************************************************************************/
-		//move(FWD);
-	//}
-	//else if (!(PIND & (1<<PIND7))) //Front left
-	//{
-		//move(BWD);
-		//_delay_ms(back);
-		//turn(RIGHT);
-		//_delay_ms(turnT);
-		///************************************************************************/
-		///* Disable if using with sonar                                          */
-		///************************************************************************/
-		//move(FWD);
-	//}
+		/************************************************************************/
+		/* Code for remaining inside black                                      */
+		/************************************************************************/
+		if((qti & (1<<PINB4)) && (qti & (1<<PINB5))){ //Both front
+			move(BWD);
+			_delay_ms(back);
+			turn(LEFT);
+			_delay_ms(turnT);
+			/************************************************************************/
+			/* Disable if using with sonar                                          */
+			/************************************************************************/
+			move(FWD);
+		}
+		else if(qti & (1<<PINB5)){ //Front right
+			move(BWD);
+			_delay_ms(back);
+			turn(LEFT);
+			_delay_ms(turnT);
+			/************************************************************************/
+			/* Disable if using with sonar                                          */
+			/************************************************************************/
+			move(FWD);
+		}
+		else if (qti & (1<<PINB4)) //Front left
+		{
+			move(BWD);
+			_delay_ms(back);
+			turn(RIGHT);
+			_delay_ms(turnT);
+			/************************************************************************/
+			/* Disable if using with sonar                                          */
+			/************************************************************************/
+			move(FWD);
+		}
+		else if (qti & (1<<PINB2)) //Back left
+		{
+			turn(RIGHT);
+			_delay_ms(turnT);
+			move(FWD);
+			_delay_ms(back);
+			/************************************************************************/
+			/* Disable if using with sonar                                          */
+			/************************************************************************/
+			move(FWD);
+		}
+		else if (qti & (1<<PINB1)) //Back Right
+		{
+			turn(LEFT);
+			_delay_ms(turnT);
+			move(FWD);
+			_delay_ms(back);
+			/************************************************************************/
+			/* Disable if using with sonar                                          */
+			/************************************************************************/
+			move(FWD);
+		}
+		
+	}
 	
 	/************************************************************************/
 	/* Code for the straight line milestone                                 */
