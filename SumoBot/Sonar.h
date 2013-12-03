@@ -10,8 +10,21 @@
 
 volatile unsigned int count;
 volatile unsigned int risingEdge;
-volatile float rangeCenter;
-volatile float rangeRight;
+
+volatile float rangeCenterMean;
+volatile float rangeRightMean;
+
+struct Node
+{
+	float Data;
+	struct Node* next;
+}*rearCenter, *frontCenter, *rearRight, *frontRight;
+
+void pop(struct Node *rear);
+
+void push(float value, struct Node *front, struct Node *rear);
+
+float getMean(struct Node *rear);
 
 void initSonar(void);
 

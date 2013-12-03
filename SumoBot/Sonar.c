@@ -7,6 +7,8 @@
 #define F_CPU 16000000UL
 #define RIGHT (1<<0)
 #define CENTER (1<<1)
+#define NULL 0
+#define SAMPLE_SIZE 5
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -18,8 +20,14 @@ void initSonar(void) // enable interrupt
 	//Initialize variables
 	count = 10000;
 	risingEdge = 1;
-	rangeCenter = 10000;
-	rangeRight = 10000;
+	rangeCenterMean = 10000;
+	rangeRightMean = 10000;
+	frontCenter = NULL;
+	frontRight = NULL;
+	for(int i = 0; i < SAMPLE_SIZE; i++){
+		push(300,frontCenter,rearCenter);
+		push(300,frontRight,rearRight);
+	}
 	
 	PCICR |= (1<<PCIE1); //enable pin change interrupt for PORTC
 	PCMSK1 |= (1<<PCINT8)|(1<<PCINT9); //enable interrupt for PC0 (Pin A0), PC1 (Pin A1)
@@ -58,9 +66,58 @@ void startSonarMeasurement(int sonar){
 void updateRanges(void){
 	startSonarMeasurement(CENTER); // start trigger pulse for new sonar measurement
 	_delay_ms(20); // Minimum delay theoretically 18.5ms due to sonar
-	rangeCenter = count * 0.02712; // Calculate range in inches from timer count
+	push(count * 0.02712,frontCenter,rearCenter); // Calculate range in inches from timer count
+	pop(rearCenter);
+	rangeCenterMean = getMean(rearCenter);
+	
 	startSonarMeasurement(RIGHT); // start trigger pulse for new sonar measurement
 	_delay_ms(20); // Minimum delay theoretically 18.5ms due to sonar
-	rangeRight = count * 0.02712; // Calculate range in inches from timer count
+	push(count * 0.02712,frontRight,rearRight); // Calculate range in inches from timer count
+	pop(rearRight);
+	rangeRightMean = getMean(rearRight);
 }
 
+void pop(struct Node *rear)
+{
+	struct Node *temp, *var=rear;
+	if(var==rear)
+	{
+		rear = rear->next;
+		free(var);
+	}
+}
+
+void push(float value, struct Node *front, struct Node *rear)
+{
+	struct Node *temp;
+	temp=(struct Node *)malloc(sizeof(struct Node));
+	temp->Data=value;
+	if (front == NULL)
+	{
+		front=temp;
+		front->next=NULL;
+		rear=front;
+	}
+	else
+	{
+		front->next=temp;
+		front=temp;
+		front->next=NULL;
+	}
+}
+
+float getMean(struct Node *rear){
+	struct Node *var=rear;
+	float mean = 0;
+	float count = 0;
+	if(var!=NULL)
+	{
+		while(var!=NULL)
+		{
+			mean += var->Data;
+			count += 1;
+			var=var->next;
+		}
+	}
+	return mean/count;
+}

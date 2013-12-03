@@ -86,7 +86,7 @@ int main(void)
 			updateRanges();
 			//printf("The range is %u inches, %u         \r\n", (uint16_t)rangeCenter, (uint16_t)rangeRight); // Print the range in inches to serial as
 
-			//If counter reaches 2100, that is aproximately the count after 360 degrees
+			//If counter reaches 2100, that is approximately the count after 360 degrees
 			if(counter > 2100){
 				//Move forward for 500 count(arbitrary time)
 				if(counter < 2600){
@@ -100,13 +100,13 @@ int main(void)
 			}
 			else {
 				//If in front of us, go for it
-				if (rangeCenter < DISTTH)
+				if (rangeCenterMean < DISTTH)
 				{
 					counter = 0;
 					move(FWD);
 				}
 				//If it's in the right sonar sight, turn right
-				else if(rangeRight < DISTTH){
+				else if(rangeRightMean < DISTTH){
 					counter = 0;
 					turn(RIGHT);
 				}
