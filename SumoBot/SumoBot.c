@@ -84,7 +84,7 @@ int main(void)
 			/* Sonar - PC0 (Pin A0), PC1 (Pin A1)                              */
 			/************************************************************************/
 			updateRanges();
-			//printf("The range is %u inches, %u         \r\n", (uint16_t)rangeCenter, (uint16_t)rangeRight); // Print the range in inches to serial as
+			//printf("The range is %u inches, %u         \r\n", (uint16_t)rangeCenterMean, (uint16_t)rangeRightMean); // Print the range in inches to serial as
 
 			//If counter reaches 2100, that is approximately the count after 360 degrees
 			if(counter > 2100){
