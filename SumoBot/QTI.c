@@ -17,6 +17,9 @@
 #include "QTI.h"
 
 void initQTI(void){
+	/************************************************************************/
+	/* Setting QTI interruptions                                            */
+	/************************************************************************/
 	PCICR |= 0x01;
 	//P5 - Front Right - pin 13
 	//P4 - front left - pin 12
@@ -28,109 +31,71 @@ void initQTI(void){
 
 void handleQTI(void){
 	//Check for center QTI
-	if (qti & (1<<0))
+	if (qti & (1<<PCINT0))
 	{
 		move(STOP);
 		dead = 1;
 	}
-	else{
-		int back = 300;
-		int turnT = 300;
+	else {
+		int backTime = 1000;
+		int turnTime = 300;
 	
 		/************************************************************************/
 		/* Code for remaining inside black                                      */
 		/************************************************************************/
 		if((qti & (1<<PINB4)) && (qti & (1<<PINB5))){ //Both front
 			move(BWD);
-			_delay_ms(back);
+			_delay_ms(backTime);
 			turn(LEFT);
-			_delay_ms(turnT);
+			_delay_ms(turnTime);
 			/************************************************************************/
 			/* Disable if using with sonar                                          */
 			/************************************************************************/
-			move(FWD);
+			//move(FWD);
 		}
 		else if(qti & (1<<PINB5)){ //Front right
 			move(BWD);
-			_delay_ms(back);
+			_delay_ms(backTime);
 			turn(LEFT);
-			_delay_ms(turnT);
+			_delay_ms(turnTime);
 			/************************************************************************/
 			/* Disable if using with sonar                                          */
 			/************************************************************************/
-			move(FWD);
+			//move(FWD);
 		}
 		else if (qti & (1<<PINB4)) //Front left
 		{
 			move(BWD);
-			_delay_ms(back);
+			_delay_ms(backTime);
 			turn(RIGHT);
-			_delay_ms(turnT);
+			_delay_ms(turnTime);
 			/************************************************************************/
 			/* Disable if using with sonar                                          */
 			/************************************************************************/
-			move(FWD);
+			//move(FWD);
 		}
 		else if (qti & (1<<PINB2)) //Back left
 		{
 			turn(RIGHT);
-			_delay_ms(turnT);
+			_delay_ms(turnTime);
 			move(FWD);
-			_delay_ms(back);
+			_delay_ms(backTime);
 			/************************************************************************/
 			/* Disable if using with sonar                                          */
 			/************************************************************************/
-			move(FWD);
+			//move(FWD);
 		}
 		else if (qti & (1<<PINB1)) //Back Right
 		{
 			turn(LEFT);
-			_delay_ms(turnT);
+			_delay_ms(turnTime);
 			move(FWD);
-			_delay_ms(back);
+			_delay_ms(backTime);
 			/************************************************************************/
 			/* Disable if using with sonar                                          */
 			/************************************************************************/
-			move(FWD);
+			//move(FWD);
 		}
 		
 	}
-	
-	/************************************************************************/
-	/* Code for the straight line milestone                                 */
-	/************************************************************************/
-	//if((!(qti & (1<<PIND2))||!(qti & (1<<PIND1)))){ //Front right
-		//if(first){
-			//move(BWD);
-			//_delay_ms(1000);
-			//turn(LEFT);
-			//_delay_ms(1300);
-			//move(FWD);
-			//first = 0;
-		//}
-		//else{
-			//if(!(qti & ((1<<PIND1) | (1<<PIND2)))){ //Both front
-				//move(BWD);
-				//_delay_ms(back);
-				//turn(LEFT);
-				//_delay_ms(turnT);
-				//move(FWD);
-			//}
-			//else if(!(qti & (1<<PIND2))){ //Front right
-				//move(BWD);
-				//_delay_ms(back);
-				//turn(LEFT);
-				//_delay_ms(turnT);
-				//move(FWD);
-			//}
-			//else if (!(qti & (1<<PIND1))) //Front left
-			//{
-				//move(BWD);
-				//_delay_ms(back);
-				//turn(RIGHT);
-				//_delay_ms(turnT);
-				//move(FWD);
-			//}
-		//}
-	//}
 }

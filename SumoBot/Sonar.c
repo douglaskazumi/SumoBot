@@ -5,8 +5,8 @@
  *  Author: kazumi
  */ 
 #define F_CPU 16000000UL
-#define CENTER (1<<0)
-#define RIGHT (1<<1)
+#define RIGHT (1<<0)
+#define CENTER (1<<1)
 
 #include <avr/io.h>
 #include <avr/interrupt.h>

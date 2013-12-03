@@ -3,6 +3,8 @@
 *
 * Created: 11/12/2013 11:22:26 PM
 *  Author: kazumi
+* The base of the code is copied from Frank's lecture, some comments are not complete because where not completely visible in the videonote.
+* What I did is replace the use of timer 1 by timers 0 and 2 and then create some wrapper functions.
 */
 #define F_CPU 16000000UL
 #define DEADTIME 1
