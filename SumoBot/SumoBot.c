@@ -11,7 +11,6 @@
 #define BWD 0
 #define LEFT 1
 #define RIGHT 0
-#define DISTTH 28
 
 #include <avr/io.h>
 #include <avr/delay.h>
@@ -38,8 +37,8 @@ int main(void)
 	/************************************************************************/
 	/* To turn on remotely pin 2                                            */
 	/************************************************************************/
-	//while(PIND & (1<<PIND2)){
-	//}
+	while(PIND & (1<<PIND2)){
+	}
 	
 	PORTD |= (1<<PIND4);
 	
@@ -69,54 +68,37 @@ int main(void)
 	
 	while(1)
 	{
-		///************************************************************************/
-		///* QTI with interruptions test                                          */
-		///************************************************************************/
-		//if(qti > 0){
-			///************************************************************************/
-			///* If any of the QTIs is activated, do the action                       */
-			///************************************************************************/
-			//handleQTI();
-			////printf("The qti is %u       \r\n", (uint16_t)qti);
-		//}
-		//else{
+		/************************************************************************/
+		/* QTI with interruptions test                                          */
+		/************************************************************************/
+		if(qti > 0){
+			/************************************************************************/
+			/* If any of the QTIs is activated, do the action                       */
+			/************************************************************************/
+			handleQTI();
+			//printf("The qti is %u       \r\n", (uint16_t)qti);
+		}
+		else{
 			/************************************************************************/
 			/* Sonar - PC0 (Pin A0), PC1 (Pin A1)                              */
 			/************************************************************************/
 			updateRanges();
-			//printf("The range is %u inches, %u         \r\n", (uint16_t)rangeCenter, (uint16_t)rangeRight); // Print the range in inches to serial as
+			//printf("The range is %u inches, %u         \r\n", (uint16_t)rangeCenterMean, (uint16_t)rangeRightMean); // Print the range in inches to serial as
 
-			//If counter reaches 2100, that is aproximately the count after 360 degrees
-			if(counter > 2100){
-				//Move forward for 500 count(arbitrary time)
-				if(counter < 2600){
-					counter ++;
-					move(FWD);
-				}
-				//After that go back to zero
-				else{
-					counter = 0;
-				}
+			//If in front of us, go for it
+			if (centerLowCount > 1)
+			{
+				move(FWD);
 			}
-			else {
-				//If in front of us, go for it
-				if (rangeCenter < DISTTH)
-				{
-					counter = 0;
-					move(FWD);
-				}
-				//If it's in the right sonar sight, turn right
-				else if(rangeRight < DISTTH){
-					counter = 0;
-					turn(RIGHT);
-				}
-				//Otherwise try left
-				else{
-					counter++;
-					turn(LEFT);
-				}
+			//If it's in the right sonar sight, turn right
+			else if(rightLowCount > 1){
+				turn(RIGHT);
 			}
-		//}
+			//Otherwise try left
+			else if(rightHighCount > 1 && centerHighCount > 1){
+				turn(LEFT);
+			}
+		}
 		
 		/************************************************************************/
 		/* If dead == 1, center qti have detected white
@@ -136,7 +118,6 @@ int main(void)
 ISR(PCINT0_vect){
 	qti = PINB & ((1<<PINB0)|(1<<PINB1)|(1<<PINB2)|(1<<PINB4)|(1<<PINB5));
 	qti = qti ^ ((1<<PINB0)|(1<<PINB1)|(1<<PINB2)|(1<<PINB4)|(1<<PINB5));
-	handleQTI();
 }
 
 /************************************************************************/

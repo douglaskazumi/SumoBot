@@ -12,6 +12,10 @@ volatile unsigned int count;
 volatile unsigned int risingEdge;
 volatile float rangeCenter;
 volatile float rangeRight;
+volatile unsigned int centerLowCount;
+volatile unsigned int rightLowCount;
+volatile unsigned int centerHighCount;
+volatile unsigned int rightHighCount;
 
 void initSonar(void);
 

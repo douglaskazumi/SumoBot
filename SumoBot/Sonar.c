@@ -7,6 +7,8 @@
 #define F_CPU 16000000UL
 #define RIGHT (1<<0)
 #define CENTER (1<<1)
+#define DISTTH 28
+#define MEAS_COUNT 2
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -20,6 +22,10 @@ void initSonar(void) // enable interrupt
 	risingEdge = 1;
 	rangeCenter = 10000;
 	rangeRight = 10000;
+	centerLowCount = 0;
+	centerHighCount = 0;
+	rightLowCount = 0;
+	rightHighCount = 0;
 	
 	PCICR |= (1<<PCIE1); //enable pin change interrupt for PORTC
 	PCMSK1 |= (1<<PCINT8)|(1<<PCINT9); //enable interrupt for PC0 (Pin A0), PC1 (Pin A1)
@@ -59,8 +65,33 @@ void updateRanges(void){
 	startSonarMeasurement(CENTER); // start trigger pulse for new sonar measurement
 	_delay_ms(20); // Minimum delay theoretically 18.5ms due to sonar
 	rangeCenter = count * 0.02712; // Calculate range in inches from timer count
+	if(rangeCenter < DISTTH){
+		if(centerLowCount < MEAS_COUNT){
+			centerLowCount++;
+		}
+		centerHighCount=0;
+	}
+	else{
+		if(centerHighCount < MEAS_COUNT){
+			centerHighCount++;
+		}
+		centerLowCount = 0;
+	}
+	
 	startSonarMeasurement(RIGHT); // start trigger pulse for new sonar measurement
 	_delay_ms(20); // Minimum delay theoretically 18.5ms due to sonar
 	rangeRight = count * 0.02712; // Calculate range in inches from timer count
+	if(rangeRight < DISTTH){
+		if(rightLowCount < MEAS_COUNT){
+			rightLowCount++;
+		}
+		rightHighCount=0;
+	}
+	else{
+		if(rightHighCount < MEAS_COUNT){
+			rightHighCount++;
+		}
+		rightLowCount = 0;
+	}
 }
 
