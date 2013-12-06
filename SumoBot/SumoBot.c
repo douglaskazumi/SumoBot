@@ -47,7 +47,7 @@ int main(void)
 	first = 1;
 	dead = 0;
 	//Counter to use instead of timer to change the algorithm
-	int counter = 0;
+	//int counter = 0;
 	
 	//set up pwm
 	setPWM();
@@ -56,7 +56,24 @@ int main(void)
 	//set up sonar
 	initSonar();
 	sei(); // enable global interrupts
-
+	
+	
+	/************************************************************************/
+	/* Routine to drop the front plow                                                                     */
+	/************************************************************************/
+	move(FWD);
+	_delay_ms(300);
+	move(BWD);
+	_delay_ms(300);
+	turn(LEFT);
+	_delay_ms(300);
+	turn(RIGHT);
+	_delay_ms(300);
+	turn(LEFT);
+	_delay_ms(300);
+	move(STOP);
+	
+	
 	/************************************************************************/
 	/* QTI test - part 1                                                    */
 	/************************************************************************/
@@ -83,7 +100,10 @@ int main(void)
 			/* Sonar - PC0 (Pin A0), PC1 (Pin A1)                              */
 			/************************************************************************/
 			updateRanges();
-			//printf("The range is %u inches, %u         \r\n", (uint16_t)rangeCenterMean, (uint16_t)rangeRightMean); // Print the range in inches to serial as
+			//if((int)(rangeRight * 0.02712) == 12){
+				//printf("The range is %u inches, %u         %u\r\n", (uint16_t)rangeCenter, (uint16_t)rangeRight, (uint16_t)(rangeRight * 0.02712)); // Print the range in inches to serial as
+			//}
+			//printf("The range is %u inches, %u         \r\n", (uint16_t)rangeCenter, (uint16_t)rangeRight);
 
 			//If in front of us, go for it
 			if (centerLowCount > 1)

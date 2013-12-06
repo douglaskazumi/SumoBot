@@ -9,6 +9,7 @@
 #define CENTER (1<<1)
 #define DISTTH 28
 #define MEAS_COUNT 2
+#define CONV 0.02712
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -64,7 +65,7 @@ void startSonarMeasurement(int sonar){
 void updateRanges(void){
 	startSonarMeasurement(CENTER); // start trigger pulse for new sonar measurement
 	_delay_ms(20); // Minimum delay theoretically 18.5ms due to sonar
-	rangeCenter = count * 0.02712; // Calculate range in inches from timer count
+	rangeCenter = count * CONV; // Calculate range in inches from timer count
 	if(rangeCenter < DISTTH){
 		if(centerLowCount < MEAS_COUNT){
 			centerLowCount++;
@@ -80,7 +81,11 @@ void updateRanges(void){
 	
 	startSonarMeasurement(RIGHT); // start trigger pulse for new sonar measurement
 	_delay_ms(20); // Minimum delay theoretically 18.5ms due to sonar
-	rangeRight = count * 0.02712; // Calculate range in inches from timer count
+	int reject = count;
+	if(reject > 453 && reject < 473){
+		count = 4000;
+	}
+	rangeRight = count * CONV; // Calculate range in inches from timer count
 	if(rangeRight < DISTTH){
 		if(rightLowCount < MEAS_COUNT){
 			rightLowCount++;

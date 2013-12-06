@@ -37,8 +37,8 @@ void handleQTI(void){
 		dead = 1;
 	}
 	else {
-		int backTime = 1000;
-		int turnTime = 300;
+		int backTime = 800;
+		int turnTime = 500;
 	
 		/************************************************************************/
 		/* Code for remaining inside black                                      */
