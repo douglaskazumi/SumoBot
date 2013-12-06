@@ -14,6 +14,10 @@
 #define LEFT 1
 #define RIGHT 0
 
+//"Times" for avoid spinning forever
+#define SPIN_LIMIT 2100
+#define AFTER_SPIN 2900
+
 #include <avr/io.h>
 #include <avr/delay.h>
 #include <avr/interrupt.h>
@@ -21,6 +25,8 @@
 #include "Sonar.h"
 #include "Motor.h"
 #include "QTI.h"
+
+volatile int spinningLeftCount;
 
 int main(void)
 {
@@ -37,7 +43,7 @@ int main(void)
 	PORTD &= ~(1<<PIND4);
 	
 	/************************************************************************/
-	/* To turn on remotely pin 2                                            */
+	/* To turn on remotely (pin 2)                                            */
 	/************************************************************************/
 	while(PIND & (1<<PIND2)){
 	}
@@ -51,6 +57,7 @@ int main(void)
 	//initialize variables
 	qti = 0;
 	dead = 0;
+	spinningLeftCount = 0;
 	
 	//set up pwm
 	setPWM();
@@ -85,6 +92,7 @@ int main(void)
 			/************************************************************************/
 			handleQTI();
 			//printf("The qti is %u       \r\n", (uint16_t)qti);
+			spinningLeftCount = 0;
 		}
 		else{
 			/************************************************************************/
@@ -95,19 +103,36 @@ int main(void)
 				//printf("The range is %u inches, %u         %u\r\n", (uint16_t)rangeCenter, (uint16_t)rangeRight, (uint16_t)(rangeRight * 0.02712)); // Print the range in inches to serial as
 			//}
 			//printf("The range is %u inches, %u         \r\n", (uint16_t)rangeCenter, (uint16_t)rangeRight);
-
-			//If in front of us, go for it
-			if (centerLowCount > 1)
-			{
-				move(FWD);
+			
+			//If completed one spin and didn't detect, go forward
+			if(spinningLeftCount > SPIN_LIMIT){
+				//Go forward if within the count to go forward
+				if(spinningLeftCount < AFTER_SPIN){
+					move(FWD);
+					spinningLeftCount += 1;
+				}
+				//After finishing going forward, reset counter
+				else{
+					spinningLeftCount = 0;
+				}
 			}
-			//If it's in the right sonar sight, turn right
-			else if(rightLowCount > 1){
-				turn(RIGHT);
-			}
-			//Otherwise try left
-			else if(rightHighCount > 1 && centerHighCount > 1){
-				turn(LEFT);
+			else{
+				//If in front of us, go for it
+				if (centerLowCount > 1)
+				{
+					move(FWD);
+					spinningLeftCount = 0;
+				}
+				//If it's in the right sonar sight, turn right
+				else if(rightLowCount > 1){
+					turn(RIGHT);
+					spinningLeftCount = 0;
+				}
+				//Otherwise try left
+				else if(rightHighCount > 1 && centerHighCount > 1){
+					turn(LEFT);
+					spinningLeftCount += 1;
+				}
 			}
 		}
 		
