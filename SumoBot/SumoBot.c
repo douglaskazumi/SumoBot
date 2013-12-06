@@ -6,6 +6,8 @@
 */
 
 #define F_CPU 16000000UL
+
+//Motor driving values
 #define FWD 255
 #define STOP 127
 #define BWD 0
@@ -40,14 +42,15 @@ int main(void)
 	while(PIND & (1<<PIND2)){
 	}
 	
+	//Light on the green LED
 	PORTD |= (1<<PIND4);
 	
-	init_uart();
+	//initialize serial
+	//init_uart();
+	
+	//initialize variables
 	qti = 0;
-	first = 1;
 	dead = 0;
-	//Counter to use instead of timer to change the algorithm
-	//int counter = 0;
 	
 	//set up pwm
 	setPWM();
@@ -55,11 +58,12 @@ int main(void)
 	initQTI();
 	//set up sonar
 	initSonar();
-	sei(); // enable global interrupts
+	// enable global interrupts
+	sei(); 
 	
 	
 	/************************************************************************/
-	/* Routine to drop the front plow                                                                     */
+	/* Routine to drop the plows                                            */
 	/************************************************************************/
 	move(FWD);
 	_delay_ms(300);
@@ -73,24 +77,11 @@ int main(void)
 	_delay_ms(300);
 	move(STOP);
 	
-	
-	/************************************************************************/
-	/* QTI test - part 1                                                    */
-	/************************************************************************/
-	//move(FWD);
-	
-	//turn(LEFT);
-	//while(1){
-	//}
-	
 	while(1)
 	{
-		/************************************************************************/
-		/* QTI with interruptions test                                          */
-		/************************************************************************/
 		if(qti > 0){
 			/************************************************************************/
-			/* If any of the QTIs is activated, do the action                       */
+			/* If any of the QTIs is activated, handle                              */
 			/************************************************************************/
 			handleQTI();
 			//printf("The qti is %u       \r\n", (uint16_t)qti);
@@ -133,7 +124,7 @@ int main(void)
 }
 
 /************************************************************************/
-/* Interruption that updates the qti variable                           */
+/* Interruption that updates the qti variable (xor makes the bits for qti detecting white 1)                          */
 /************************************************************************/
 ISR(PCINT0_vect){
 	qti = PINB & ((1<<PINB0)|(1<<PINB1)|(1<<PINB2)|(1<<PINB4)|(1<<PINB5));

@@ -8,12 +8,13 @@
 #ifndef QTI_H_
 #define QTI_H_
 
+//Stores the values of the sensors
 volatile int qti;
-volatile int first;
+
+//Boolean to store when the center QTI detects white
 volatile int dead;
 
-void checkQTI(void);
-
+//Based on value of qti variable, take the correct action
 void handleQTI(void);
 
 #endif /* QTI_H_ */

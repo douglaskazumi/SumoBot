@@ -5,6 +5,8 @@
  *  Author: kazumi
  */ 
 #define F_CPU 16000000UL
+
+//Motor driving values
 #define FWD 255
 #define STOP 127
 #define BWD 0
@@ -43,25 +45,11 @@ void handleQTI(void){
 		/************************************************************************/
 		/* Code for remaining inside black                                      */
 		/************************************************************************/
-		if((qti & (1<<PINB4)) && (qti & (1<<PINB5))){ //Both front
+		if(qti & (1<<PINB5)){ //Front right
 			move(BWD);
 			_delay_ms(backTime);
 			turn(LEFT);
 			_delay_ms(turnTime);
-			/************************************************************************/
-			/* Disable if using with sonar                                          */
-			/************************************************************************/
-			//move(FWD);
-		}
-		else if(qti & (1<<PINB5)){ //Front right
-			move(BWD);
-			_delay_ms(backTime);
-			turn(LEFT);
-			_delay_ms(turnTime);
-			/************************************************************************/
-			/* Disable if using with sonar                                          */
-			/************************************************************************/
-			//move(FWD);
 		}
 		else if (qti & (1<<PINB4)) //Front left
 		{
@@ -69,10 +57,6 @@ void handleQTI(void){
 			_delay_ms(backTime);
 			turn(RIGHT);
 			_delay_ms(turnTime);
-			/************************************************************************/
-			/* Disable if using with sonar                                          */
-			/************************************************************************/
-			//move(FWD);
 		}
 		else if (qti & (1<<PINB2)) //Back left
 		{
@@ -80,10 +64,6 @@ void handleQTI(void){
 			_delay_ms(turnTime);
 			move(FWD);
 			_delay_ms(backTime);
-			/************************************************************************/
-			/* Disable if using with sonar                                          */
-			/************************************************************************/
-			//move(FWD);
 		}
 		else if (qti & (1<<PINB1)) //Back Right
 		{
@@ -91,10 +71,6 @@ void handleQTI(void){
 			_delay_ms(turnTime);
 			move(FWD);
 			_delay_ms(backTime);
-			/************************************************************************/
-			/* Disable if using with sonar                                          */
-			/************************************************************************/
-			//move(FWD);
 		}
 		
 	}

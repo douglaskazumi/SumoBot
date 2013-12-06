@@ -5,10 +5,18 @@
  *  Author: kazumi
  */ 
 #define F_CPU 16000000UL
+
+//Pins for each sonar
 #define RIGHT (1<<0)
 #define CENTER (1<<1)
+
+//Upper threshold for distances that we consider
 #define DISTTH 28
+
+//Number of sequential measurements that we need to do under the threshold to consider a valid measurement
 #define MEAS_COUNT 2
+
+//Value that converts counting to inches
 #define CONV 0.02712
 
 #include <avr/io.h>
@@ -63,36 +71,58 @@ void startSonarMeasurement(int sonar){
 }
 
 void updateRanges(void){
-	startSonarMeasurement(CENTER); // start trigger pulse for new sonar measurement
-	_delay_ms(20); // Minimum delay theoretically 18.5ms due to sonar
-	rangeCenter = count * CONV; // Calculate range in inches from timer count
+	// start trigger pulse for new sonar measurement
+	startSonarMeasurement(CENTER); 
+	// Minimum delay theoretically 18.5ms due to sonar
+	_delay_ms(20); 
+	// Calculate range in inches from timer count
+	rangeCenter = count * CONV; 
+	
+	//Code to reject outliers
 	if(rangeCenter < DISTTH){
+		//This ensures that the count doesn't blow
 		if(centerLowCount < MEAS_COUNT){
 			centerLowCount++;
 		}
 		centerHighCount=0;
 	}
 	else{
+		//This ensures that the count doesn't blow
 		if(centerHighCount < MEAS_COUNT){
 			centerHighCount++;
 		}
 		centerLowCount = 0;
 	}
 	
-	startSonarMeasurement(RIGHT); // start trigger pulse for new sonar measurement
-	_delay_ms(20); // Minimum delay theoretically 18.5ms due to sonar
+	// start trigger pulse for new sonar measurement
+	startSonarMeasurement(RIGHT); 
+	// Minimum delay theoretically 18.5ms due to sonar
+	_delay_ms(20); 
+	
+	/************************************************************************/
+	/* The following chunk of code is to handle some issues that start happening
+		with the right side sonar, where it was outputing 12 inches randomly when nothing was in front of it
+		this started happening on the Thursday before competition.
+		After spending 6 hours trying to fix that properly, we've decided filtering the bad values.             */
+	/************************************************************************/	
 	int reject = count;
 	if(reject > 453 && reject < 473){
 		count = 4000;
 	}
-	rangeRight = count * CONV; // Calculate range in inches from timer count
+	
+	// Calculate range in inches from timer count
+	rangeRight = count * CONV; 
+	
+	//Code to reject outliers
 	if(rangeRight < DISTTH){
+		//This ensures that the count doesn't blow
 		if(rightLowCount < MEAS_COUNT){
 			rightLowCount++;
 		}
 		rightHighCount=0;
 	}
 	else{
+		//This ensures that the count doesn't blow
 		if(rightHighCount < MEAS_COUNT){
 			rightHighCount++;
 		}

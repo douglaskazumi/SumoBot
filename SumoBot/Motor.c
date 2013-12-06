@@ -139,7 +139,6 @@ void turn(int direction){
 /************************************************************************/
 void move(int direction){
 	if(direction == FWD){
-		//moveMotor(FWD+11,RIGHT); //Hack to try to drive straight
 		moveMotor(FWD,RIGHT);
 		moveMotor(FWD,LEFT);
 	}
