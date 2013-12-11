@@ -45,9 +45,6 @@ int main(void)
 	//Light on the green LED
 	PORTD |= (1<<PIND4);
 	
-	//initialize serial
-	//init_uart();
-	
 	//initialize variables
 	qti = 0;
 	dead = 0;
@@ -84,17 +81,12 @@ int main(void)
 			/* If any of the QTIs is activated, handle                              */
 			/************************************************************************/
 			handleQTI();
-			//printf("The qti is %u       \r\n", (uint16_t)qti);
 		}
 		else{
 			/************************************************************************/
 			/* Sonar - PC0 (Pin A0), PC1 (Pin A1)                              */
 			/************************************************************************/
 			updateRanges();
-			//if((int)(rangeRight * 0.02712) == 12){
-				//printf("The range is %u inches, %u         %u\r\n", (uint16_t)rangeCenter, (uint16_t)rangeRight, (uint16_t)(rangeRight * 0.02712)); // Print the range in inches to serial as
-			//}
-			//printf("The range is %u inches, %u         \r\n", (uint16_t)rangeCenter, (uint16_t)rangeRight);
 
 			//If in front of us, go for it
 			if (centerLowCount > 1)
